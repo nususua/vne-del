@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru" data-theme="dark" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Вне дел — выбирай занятие по интересам, времени и бюджету. Сохраняй идеи и делай первый шаг.">
+  <meta name="theme-color" content="#101010">
+  <title>Вне дел — от интереса к первой попытке</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css?v=d9a6304bcf">
+</head>
+<body>
+  <a class="skip-link" href="#discovery">Перейти к идеям</a>
+  <header class="topbar">
+    <a class="brand" href="#" data-view="feed" aria-label="Вне дел — на главную"><span class="brand-icon" aria-hidden="true">✳</span><span>вне дел<small>время для себя</small></span></a>
+    <nav aria-label="Основная навигация">
+      <button type="button" class="nav-item active" data-view="feed">Вдохновение</button>
+      <button type="button" class="nav-item" data-view="community">Общая лента</button>
+      <button type="button" class="nav-item" data-view="board">Моя доска <span id="savedCount">0</span></button>
+    </nav>
+    <div class="header-actions">
+      <button type="button" class="btn btn-dark add-idea" id="addIdea"><span aria-hidden="true">+</span> Добавить идею</button>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Включить светлую тему" aria-pressed="true"><span aria-hidden="true">☀</span></button>
+      <button type="button" class="avatar" id="profile" aria-label="Открыть мой профиль">А</button>
+    </div>
+  </header>
+  <main>
+    <div class="demo-banner"><span><span class="demo-dot" aria-hidden="true"></span>Маленький шаг — новое увлечение</span><div class="session-controls"><span id="sessionName"></span><button type="button" id="syncStatus" class="text-button" aria-live="polite"></button><button type="button" class="text-button" id="logout">Войти по почте</button></div></div>
+    <section class="intro" aria-labelledby="pageTitle">
+      <div class="intro-main">
+        <p class="eyebrow">СВОБОДНОЕ ВРЕМЯ — ТВОЁ ВРЕМЯ</p>
+        <h1 id="pageTitle">Для себя.<br><span>Просто так.</span></h1>
+        <p id="pageDescription">Найди занятие по интересам, времени и бюджету. Сохрани идею — и сделай первый шаг.</p>
+        <button type="button" class="interest-link" id="editInterests">Мои интересы <span id="interestTotal" class="interest-total">0</span><span aria-hidden="true">↗</span></button>
+      </div>
+      <aside class="interest-map" aria-label="Карта выбранных интересов">
+        <div class="map-caption">МОЯ КАРТА ИНТЕРЕСОВ <span aria-hidden="true">✳</span></div>
+        <div id="mapNodes"></div>
+        <p>Любопытство — уже начало.</p>
+      </aside>
+    </section>
+    <section id="peopleSection" class="people-section" aria-labelledby="peopleTitle"><div class="people-heading"><h2 id="peopleTitle">У каждого — своё увлечение</h2><button type="button" class="text-button" id="refreshFeed">Обновить ленту ↻</button></div><div id="peopleRow" class="people-row"></div></section>
+    <section class="discovery" id="discovery" aria-labelledby="sectionTitle" tabindex="-1">
+      <div class="section-top"><div><p class="eyebrow section-eyebrow" id="sectionEyebrow">ТВОЯ СЛЕДУЮЩАЯ МАЛЕНЬКАЯ ИСТОРИЯ</p><h2 id="sectionTitle">Тебе может понравиться <span aria-hidden="true">✦</span></h2></div><label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Идея, интерес или автор" aria-label="Поиск идей" maxlength="150"></label></div>
+      <div class="board-progress" id="boardProgress" hidden aria-label="Прогресс на доске"></div>
+      <div class="quick-picks" role="group" aria-label="Быстрый выбор занятия"><span>С чего начнём?</span><button type="button" class="quick-pick" data-quick="short" aria-pressed="false">Есть 15 минут</button><button type="button" class="quick-pick" data-quick="free" aria-pressed="false">Без затрат</button><button type="button" class="quick-pick surprise" id="surpriseIdea">Удиви меня <span aria-hidden="true">↗</span></button></div>
+      <details class="advanced-filters" id="advancedFilters" open><summary><span>Уточнить выбор</span><span id="activeFilterCount" class="filter-count"></span><span class="filter-chevron" aria-hidden="true">⌄</span></summary>
+      <div class="filter-panel">
+        <div class="filter-selects">
+          <label for="groupFilter">Направление<select id="groupFilter" class="form-select"><option value="all">Все направления</option><option>Руками</option><option>Спорт и движение</option><option>Музыка и голос</option><option>Открытия и отдых</option></select></label>
+          <label for="duration">Время<select id="duration" class="form-select"><option value="all">Сколько угодно</option><option value="15">До 15 минут</option><option value="30">До 30 минут</option><option value="60">До часа</option><option value="120">До двух часов</option></select></label>
+          <label for="format">Формат<select id="format" class="form-select"><option value="all">Любой формат</option><option value="home">Дома</option><option value="out">Вне дома</option></select></label>
+          <label for="budget">Бюджет<select id="budget" class="form-select"><option value="all">Любой бюджет</option><option value="free">Без затрат</option><option value="1000">До 1 000 ₽</option></select></label>
+          <label for="location">Локация<select id="location" class="form-select"><option value="all">Любая локация</option></select></label>
+          <label for="boardStatus" id="boardStatusLabel" hidden>Статус<select id="boardStatus" class="form-select"><option value="all">Все статусы</option><option>Хочу попробовать</option><option>В процессе</option><option>Попробовала</option></select></label>
+        </div>
+        <div class="category-row"><span class="filter-label">Интерес</span><div class="chips" id="categoryFilters" role="group" aria-label="Фильтр по интересу"></div></div>
+      </div>
+      </details>
+      <div class="results-toolbar"><p class="results-caption" id="resultCaption" role="status" aria-live="polite" aria-atomic="true"></p><label class="sort-control" for="sortOrder">Порядок<select id="sortOrder" class="form-select"><option value="all">Для вдохновения</option><option value="short">Сначала быстрые</option><option value="budget">Сначала доступные</option><option value="title">По названию</option></select></label><button type="button" class="text-button" id="clearFilters" hidden>Сбросить фильтры <span aria-hidden="true">×</span></button></div>
+      <p class="budget-hint" id="budgetHint" hidden>«Без затрат» — без платы за занятие. Материалы или инструмент предполагаются своими.</p>
+      <div id="cardGrid" class="idea-grid"></div>
+      <div id="emptyState" class="empty-state" hidden><span aria-hidden="true">✳</span><h3 id="emptyTitle"></h3><p id="emptyText"></p><div class="empty-actions"><button type="button" id="resetFilters" class="btn btn-dark">Сбросить фильтры</button><button type="button" class="btn btn-outline-secondary" data-view="community">Открыть общую ленту</button></div></div>
+    </section>
+    <footer><a class="footer-brand" href="#" data-view="feed">✳ вне дел</a><span>От интереса — к первой попытке.</span><button type="button" class="text-button" data-bs-toggle="modal" data-bs-target="#aboutModal">О сервисе</button></footer>
+  </main>
+  <noscript><p class="noscript-note">Для работы приложения включи JavaScript в браузере. Все данные прототипа сохраняются локально.</p></noscript>
+
+  <div class="modal" id="loginModal" tabindex="-1" aria-labelledby="loginTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><div><p class="eyebrow">СВОЁ МЕСТО ДЛЯ НОВОГО</p><h2 class="modal-title" id="loginTitle">Время для себя</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть вход"></button></div><div class="modal-body pb-4"><p>Войди, чтобы собирать свою доску и делиться находками.</p><form id="loginForm"><div id="localLoginFields" hidden><label class="form-label" for="localProfile">Профиль</label><select id="localProfile" class="form-select mb-3"><option value="anna">Анна · Москва</option><option value="sonya">Соня · Санкт-Петербург</option><option value="33333333-3333-4333-8333-333333333333">Миша · Казань</option></select><label class="form-label" for="localCode">Код входа</label><input id="localCode" class="form-control mb-3" type="password" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]{4}" aria-describedby="localLoginHint"><p id="localLoginHint" class="demo-note">Для проверки используй код 1234. Это имитация авторизации: письма не отправляются, данные остаются в этом браузере.</p></div><div id="cloudLoginFields"><label class="form-label" for="loginEmail">Твоя почта</label><input class="form-control mb-3" id="loginEmail" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com"><label class="form-label" for="loginName">Как тебя называть?</label><input id="loginName" class="form-control" maxlength="60" placeholder="Твоё имя"><p class="demo-note">Имя будет видно в профиле. Почта останется скрытой.</p></div><p class="comment-error" role="alert" id="loginError"></p><p id="loginHint" class="demo-note" role="status"></p><button class="btn btn-dark w-100" id="loginSubmit" type="submit">Получить ссылку</button></form></div></div></div></div>
+  <div class="modal" id="interestModal" tabindex="-1" aria-labelledby="interestTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+      <div class="modal-header"><div><p class="eyebrow">НАЧНЁМ С ЛЮБОПЫТСТВА</p><h2 id="interestTitle" class="modal-title">Что тебе интересно?</h2></div><button type="button" class="btn-close" id="interestClose" data-bs-dismiss="modal" aria-label="Закрыть выбор интересов"></button></div>
+      <div class="modal-body"><p>Выбери хотя бы одно направление. Не нужно уже уметь — достаточно захотеть попробовать.</p><p id="selectedCount" class="selected-count" aria-live="polite"></p><div id="interestChoices"></div><p class="demo-note">Выбор можно изменить. Карта показывает до трёх интересов, подборка учитывает все.</p></div>
+      <div class="modal-footer"><button type="button" class="btn btn-dark w-100" id="applyInterests">Собрать мою подборку →</button></div>
+    </div></div>
+  </div>
+  <div class="modal" id="detailModal" tabindex="-1" aria-labelledby="detailTitle" aria-hidden="true"><div class="modal-dialog modal-xl modal-dialog-centered"><div class="modal-content detail-content"><button type="button" class="btn-close detail-close" data-bs-dismiss="modal" aria-label="Закрыть публикацию"></button><div id="detailBody"></div></div></div></div>
+  <div class="modal" id="authorModal" tabindex="-1" aria-labelledby="authorTitle" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content"><div class="modal-header"><p class="eyebrow mb-0">ЛЮДИ И ИХ УВЛЕЧЕНИЯ</p><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть страницу автора"></button></div><div id="authorBody" class="modal-body profile-body"></div></div></div></div>
+  <div class="modal" id="publishModal" tabindex="-1" aria-labelledby="publishHeading" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+    <div class="modal-header"><div><p class="eyebrow">У КАЖДОГО ЕСТЬ ЧЕМ ПОДЕЛИТЬСЯ</p><h2 id="publishHeading" class="modal-title">Твоя маленькая идея</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть создание идеи"></button></div>
+    <div class="modal-body pb-4"><p>Автор — <strong id="publishWho"></strong>. После публикации идея появится в общей ленте. Другие участники смогут сохранить её на свои доски.</p>
+      <p id="publishDraftHint" class="draft-hint" hidden>Черновик восстановлен. Публикацию увидят другие только после отправки.</p>
+      <form id="publishForm">
+        <label for="publishTitle" class="form-label">Название</label><input id="publishTitle" class="form-control mb-3" maxlength="90" required placeholder="Например, сшить чехол для любимой книги">
+        <div class="publish-fields">
+          <div><label for="publishCategory" class="form-label">Интерес</label><select id="publishCategory" class="form-select"></select></div>
+          <div><label for="publishFormat" class="form-label">Формат</label><select id="publishFormat" class="form-select"><option value="home">Дома</option><option value="out">Вне дома</option></select></div>
+          <div><label for="publishCity" class="form-label">Город автора или занятия</label><input id="publishCity" class="form-control" maxlength="50" required></div>
+          <div><label for="publishPrice" class="form-label">Бюджет, ₽</label><input id="publishPrice" class="form-control" type="number" min="0" max="1000000" step="1" value="0" required></div>
+          <div><label for="publishDuration" class="form-label">Время, минут</label><input id="publishDuration" class="form-control" type="number" min="5" max="1440" step="1" value="30" required></div>
+          <div><label for="publishCover" class="form-label">Обложка</label><select id="publishCover" class="form-select"><option value="auto">По интересу</option><option value="assets/user-top.png">Драпированный топ</option><option value="assets/user-bat.png">Игрушка — летучая мышь</option><option value="assets/user-star.png">Сумка-звезда</option><option value="assets/user-clay.png">Керамическая пара</option><option value="assets/user-cat.png">Тарелочка-кот</option></select></div>
+        </div>
+        <label for="publishDescription" class="form-label mt-3">Что будем делать</label><textarea id="publishDescription" class="form-control" rows="3" maxlength="1500" required placeholder="Расскажи о занятии и небольшом результате"></textarea>
+        <label for="publishMaterials" class="form-label mt-3">Что понадобится <span class="optional">· необязательно</span></label><input id="publishMaterials" class="form-control" maxlength="300" placeholder="Если оставить пустым — подскажем по интересу">
+        <label for="publishStep" class="form-label mt-3">Первый маленький шаг <span class="optional">· необязательно</span></label><textarea id="publishStep" class="form-control" rows="2" maxlength="300" placeholder="Одно простое действие, с которого можно начать"></textarea>
+        <p id="publishError" class="comment-error" role="alert"></p><button id="publishSubmit" class="btn btn-dark w-100 mt-3">Поделиться идеей</button>
+        <p class="demo-note">Обложка — из коллекции изображений. Текст идеи, имя автора и город будут видны всем.</p>
+      </form>
+    </div>
+  </div></div></div>
+  <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3"><div id="notice" class="toast align-items-center border-0" role="status" aria-live="polite" aria-atomic="true"><div class="d-flex"><div id="noticeText" class="toast-body"></div><button type="button" id="noticeAction" class="toast-action" hidden>Отменить</button><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Закрыть уведомление"></button></div></div></div>
+  <script src="vendor/bootstrap.bundle.min.js"></script>
+  <div class="modal" id="aboutModal" tabindex="-1" aria-labelledby="aboutTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 id="aboutTitle">О «Вне дел»</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Закрыть"></button></div><div class="modal-body"><p>Место, где вдохновение превращается в первый маленький шаг. Выбирай занятие под своё время и сохраняй впечатления.</p><p>В стартовой коллекции используются вымышленные профили и примеры занятий. Это идеи для вдохновения: записи, оплаты и подтверждённых мероприятий здесь нет. Бюджет ориентировочный.</p><p id="storageAbout">Публикации и комментарии открытые. Личная доска и заметки доступны только владельцу аккаунта. Не публикуй чужие личные данные.</p></div></div></div></div>
+  <script src="bootstrap.js"></script>
+</body>
+</html>
