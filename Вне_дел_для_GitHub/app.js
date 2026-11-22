@@ -375,7 +375,7 @@
     const category=event.target.closest('[data-category]');if(category){filters.category=category.dataset.category;render();[...$('categoryFilters').children].find(b=>b.dataset.category===filters.category)?.focus({preventScroll:true});return;}
     const progress=event.target.closest('[data-progress]');if(progress){filters.status=filters.status===progress.dataset.progress?'all':progress.dataset.progress;render();[...$('boardProgress').children].find(b=>b.dataset.progress===progress.dataset.progress)?.focus({preventScroll:true});return;}
     const interest=event.target.closest('[data-interest]');if(interest){const name=interest.dataset.interest;selectedInterests=selectedInterests.includes(name)?selectedInterests.filter(x=>x!==name):[...selectedInterests,name];renderChoices();return;}
-    const view=event.target.closest('[data-view]');if(view){event.preventDefault();setView(!state.session&&view.classList.contains('brand')?'community':view.dataset.view);}
+    const view=event.target.closest('[data-view]:not(body)');if(view){event.preventDefault();setView(!state.session&&view.classList.contains('brand')?'community':view.dataset.view);}
   });
 
   $('interestModal').addEventListener('hide.bs.modal',event=>{if(!person().interests.length&&state.session&&!changingAccount)event.preventDefault();});

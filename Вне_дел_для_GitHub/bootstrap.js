@@ -7,7 +7,7 @@
   });
   try {
     if(new URLSearchParams(location.search).get('mode')==='cloud')await load('config.local.js');
-    for(const file of ['cloud.js','local.js','catalog.js','model.js','app.js'])await load(`${file}?v=local-submission-1`);
+    for(const file of ['cloud.js','local.js','catalog.js','model.js','app.js'])await load(`${file}?v=local-submission-2`);
   } catch(error) {
     document.getElementById('resultCaption').textContent=`${error.message}. Проверь файлы проекта и инструкцию README.md.`;
   }
