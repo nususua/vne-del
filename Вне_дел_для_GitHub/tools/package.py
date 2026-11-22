@@ -13,7 +13,8 @@ files = sorted(path for path in root.rglob('*') if path.is_file()
                and not (set(path.relative_to(root).parts) & excluded_dirs)
                and path.name not in excluded_names
                and not (path.name.startswith('.env.') and path.name != '.env.example')
-               and path.suffix not in {'.zip', '.log', '.pyc'})
+               and path.suffix not in {'.zip', '.log', '.pyc'}
+               and path.relative_to(root).as_posix() != 'submission/MANIFEST.sha256')
 secret = re.compile(rb'sb_(?:secret|publishable)_[A-Za-z0-9_-]{20,}|-----BEGIN (?:RSA |EC )?PRIVATE KEY-----')
 for path in files:
     if path.suffix in {'.js', '.md', '.json', '.sql', '.example', '.command', '.py'} and secret.search(path.read_bytes()):
